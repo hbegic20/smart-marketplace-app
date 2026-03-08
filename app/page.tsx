@@ -26,6 +26,12 @@ export default function Home() {
         >
           Open Agent Integration Demo
         </Link>
+        <Link
+          href="/admin/login"
+          className="mt-3 ml-2 inline-flex rounded-full border px-5 py-3 font-medium transition hover:translate-y-[-1px]"
+        >
+          Admin Login
+        </Link>
       </div>
     </main>
   );

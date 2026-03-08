@@ -2,42 +2,20 @@
 
 import { FormEvent, useState } from "react";
 
-const TOKEN_STORAGE_KEY = "marketplace_admin_jwt";
-
 type Listing = Record<string, unknown>;
 
 export function AdminListingsPanel() {
-  const [token, setToken] = useState("");
   const [payload, setPayload] = useState('{\n  "name": "Demo Listing",\n  "city": "Bugojno",\n  "service": "car mechanic",\n  "distance": 1.2,\n  "source": "manual"\n}');
   const [listings, setListings] = useState<Listing[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-
-  function saveToken() {
-    window.localStorage.setItem(TOKEN_STORAGE_KEY, token.trim());
-  }
-
-  function loadToken() {
-    const saved = window.localStorage.getItem(TOKEN_STORAGE_KEY) || "";
-    setToken(saved);
-  }
-
-  function clearToken() {
-    setToken("");
-    window.localStorage.removeItem(TOKEN_STORAGE_KEY);
-  }
 
   async function fetchListings() {
     setLoading(true);
     setError("");
 
     try {
-      const response = await fetch("/agent/admin/listings", {
-        method: "GET",
-        headers: {
-          ...(token.trim() ? { Authorization: `Bearer ${token.trim()}` } : {})
-        }
-      });
+      const response = await fetch("/agent/admin/listings", { method: "GET" });
       const json = await response.json();
 
       if (!response.ok) {
@@ -66,8 +44,7 @@ export function AdminListingsPanel() {
       const response = await fetch("/agent/admin/listings", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
-          ...(token.trim() ? { Authorization: `Bearer ${token.trim()}` } : {})
+          "Content-Type": "application/json"
         },
         body: JSON.stringify(body)
       });
@@ -90,33 +67,12 @@ export function AdminListingsPanel() {
   return (
     <section className="rounded-2xl border bg-card p-6">
       <h1 className="text-2xl font-semibold">Admin Manual Listings</h1>
-      <p className="mt-1 text-sm text-foreground/70">Uses JWT + backend email allowlist checks.</p>
+      <p className="mt-1 text-sm text-foreground/70">Admin session is handled through login/register. No manual JWT input needed.</p>
 
-      <div className="mt-5 grid gap-2">
-        <label className="grid gap-1">
-          <span className="text-sm">Admin JWT</span>
-          <textarea
-            rows={3}
-            className="rounded-lg border bg-background px-3 py-2"
-            value={token}
-            onChange={(e) => setToken(e.target.value)}
-            placeholder="Paste admin JWT"
-          />
-        </label>
-        <div className="flex gap-2">
-          <button type="button" onClick={loadToken} className="rounded-full border px-4 py-2 text-sm">
-            Load Saved
-          </button>
-          <button type="button" onClick={saveToken} className="rounded-full border px-4 py-2 text-sm">
-            Save Token
-          </button>
-          <button type="button" onClick={clearToken} className="rounded-full border px-4 py-2 text-sm">
-            Clear Token
-          </button>
-          <button type="button" onClick={fetchListings} className="rounded-full border px-4 py-2 text-sm" disabled={loading}>
-            {loading ? "Loading..." : "Refresh Listings"}
-          </button>
-        </div>
+      <div className="mt-5 flex gap-2">
+        <button type="button" onClick={fetchListings} className="rounded-full border px-4 py-2 text-sm" disabled={loading}>
+          {loading ? "Loading..." : "Refresh Listings"}
+        </button>
       </div>
 
       <form className="mt-5 grid gap-2" onSubmit={createListing}>

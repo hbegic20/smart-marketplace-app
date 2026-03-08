@@ -9,10 +9,10 @@ Next.js marketplace frontend with decoupled proxy integration to a separate Nest
   - Frontend call: `POST /agent/marketplace` (no JWT)
 - Authenticated search (history persistence)
   - Backend: `POST /api/v1/agent/marketplace`
-  - Frontend call: `POST /agent/marketplace` with `Authorization: Bearer <jwt>`
+  - Frontend call: `POST /agent/marketplace` (JWT is sent via secure cookie after login)
 - Admin manual listings
   - Backend: `POST /api/v1/admin/listings`, `GET /api/v1/admin/listings`
-  - Frontend calls: `POST/GET /agent/admin/listings` with admin JWT
+  - Frontend calls: `POST/GET /agent/admin/listings` (uses admin session cookie)
 
 ## Proxy Architecture
 
@@ -21,6 +21,9 @@ Next.js marketplace frontend with decoupled proxy integration to a separate Nest
   - `POST /agent/marketplace`
   - `GET /agent/admin/listings`
   - `POST /agent/admin/listings`
+  - `POST /auth/login`
+  - `POST /auth/register`
+  - `POST /auth/logout`
 - Next.js routes forward to NestJS backend using server-side env vars.
 
 ## Environment
@@ -44,7 +47,9 @@ npm run dev
 Pages:
 
 - Search UI: `http://localhost:3000/agent-marketplace`
-- Admin listings UI: `http://localhost:3000/agent-admin`
+- Admin login: `http://localhost:3000/admin/login`
+- Admin register: `http://localhost:3000/admin/register`
+- Admin listings UI: `http://localhost:3000/admin`
 
 ## Error Handling
 

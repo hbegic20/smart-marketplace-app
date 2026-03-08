@@ -1,9 +1,5 @@
-import { AdminListingsPanel } from "@/components/marketplace/admin-listings-panel";
+import { redirect } from "next/navigation";
 
-export default function AgentAdminPage() {
-  return (
-    <main className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10">
-      <AdminListingsPanel />
-    </main>
-  );
+export default function AgentAdminLegacyPage() {
+  redirect("/admin");
 }

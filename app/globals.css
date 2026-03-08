@@ -1,4 +1,4 @@
-@import "mapbox-gl/dist/mapbox-gl.css";
+@import "leaflet/dist/leaflet.css";
 
 @tailwind base;
 @tailwind components;
@@ -32,4 +32,36 @@ body {
     radial-gradient(900px 460px at 90% -12%, hsl(var(--primary) / 0.2), transparent 50%),
     hsl(var(--background));
   color: hsl(var(--foreground));
+}
+
+.map-pin-wrapper {
+  background: transparent;
+  border: 0;
+}
+
+.map-pin {
+  display: inline-block;
+  height: 14px;
+  width: 14px;
+  border-radius: 9999px;
+  background: hsl(var(--primary));
+  border: 2px solid white;
+  box-shadow: 0 0 0 0 hsl(var(--primary) / 0.6);
+}
+
+.map-pin--selected {
+  background: hsl(var(--accent));
+  animation: pin-pulse 1.4s infinite;
+}
+
+@keyframes pin-pulse {
+  0% {
+    box-shadow: 0 0 0 0 hsl(var(--accent) / 0.65);
+  }
+  70% {
+    box-shadow: 0 0 0 14px hsl(var(--accent) / 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 hsl(var(--accent) / 0);
+  }
 }

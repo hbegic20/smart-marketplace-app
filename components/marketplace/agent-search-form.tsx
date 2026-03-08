@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useState } from "react";
 
 type Provider = {
   name: string;
@@ -15,20 +15,13 @@ type AgentResponse = {
 };
 
 const services = ["plumber", "car mechanic", "electrician", "locksmith", "hvac"];
-const TOKEN_STORAGE_KEY = "marketplace_agent_jwt";
 
 export function AgentSearchForm() {
   const [city, setCity] = useState("Bugojno");
   const [service, setService] = useState("car mechanic");
-  const [jwtToken, setJwtToken] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [result, setResult] = useState<AgentResponse | null>(null);
-
-  useEffect(() => {
-    const saved = window.localStorage.getItem(TOKEN_STORAGE_KEY);
-    if (saved) setJwtToken(saved);
-  }, []);
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -36,12 +29,10 @@ export function AgentSearchForm() {
     setError("");
 
     try {
-      const token = jwtToken.trim();
       const response = await fetch("/agent/marketplace", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
-          ...(token ? { Authorization: `Bearer ${token}` } : {})
+          "Content-Type": "application/json"
         },
         body: JSON.stringify({ city, service })
       });
@@ -63,20 +54,11 @@ export function AgentSearchForm() {
     }
   }
 
-  function saveToken() {
-    window.localStorage.setItem(TOKEN_STORAGE_KEY, jwtToken.trim());
-  }
-
-  function clearToken() {
-    setJwtToken("");
-    window.localStorage.removeItem(TOKEN_STORAGE_KEY);
-  }
-
   return (
     <section className="rounded-2xl border bg-card p-6">
       <h1 className="text-2xl font-semibold">Agent Provider Search</h1>
       <p className="mt-1 text-sm text-foreground/70">
-        Anonymous mode uses public endpoint. Add JWT for authenticated search with history persistence.
+        Anonymous mode uses public endpoint. Login on `/admin/login` enables authenticated search/history via cookie session.
       </p>
 
       <form className="mt-5 grid gap-3" onSubmit={onSubmit}>
@@ -105,24 +87,7 @@ export function AgentSearchForm() {
           </select>
         </label>
 
-        <label className="grid gap-1">
-          <span className="text-sm">JWT token (optional)</span>
-          <textarea
-            rows={3}
-            className="rounded-lg border bg-background px-3 py-2"
-            value={jwtToken}
-            onChange={(e) => setJwtToken(e.target.value)}
-            placeholder="Paste user JWT for authenticated search"
-          />
-        </label>
-
         <div className="flex gap-2">
-          <button type="button" onClick={saveToken} className="rounded-full border px-4 py-2 text-sm">
-            Save Token
-          </button>
-          <button type="button" onClick={clearToken} className="rounded-full border px-4 py-2 text-sm">
-            Clear Token
-          </button>
           <button type="submit" disabled={loading} className="rounded-full bg-primary px-4 py-2 text-white disabled:opacity-60">
             {loading ? "Searching..." : "Search"}
           </button>

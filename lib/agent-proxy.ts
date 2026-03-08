@@ -18,10 +18,18 @@ export function getAgentApiBaseUrl() {
 
 export function extractBearerToken(req: Request): string | null {
   const auth = req.headers.get("authorization");
-  if (!auth) return null;
-  const [scheme, token] = auth.split(" ");
-  if (!scheme || !token || scheme.toLowerCase() !== "bearer") return null;
-  return token.trim() || null;
+  if (auth) {
+    const [scheme, token] = auth.split(" ");
+    if (scheme && token && scheme.toLowerCase() === "bearer") {
+      return token.trim() || null;
+    }
+  }
+
+  // Fallback to session cookie for authenticated requests from browser.
+  const cookieHeader = req.headers.get("cookie");
+  if (!cookieHeader) return null;
+  const match = cookieHeader.match(/(?:^|;\s*)agent_access_token=([^;]+)/);
+  return match?.[1] ? decodeURIComponent(match[1]) : null;
 }
 
 export async function safeJson(response: Response) {

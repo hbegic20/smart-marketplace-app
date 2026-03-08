@@ -188,7 +188,10 @@ export default function MarketplacePage() {
                 place={place}
                 selected={selectedId === place.id}
                 onHover={setSelectedId}
-                onClick={() => setModalPlace(place)}
+                onClick={() => {
+                  setSelectedId(place.id);
+                  setModalPlace(place);
+                }}
               />
             ))}
           </div>
