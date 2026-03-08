@@ -1,0 +1,35 @@
+@import "mapbox-gl/dist/mapbox-gl.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: 36 100% 98%;
+  --foreground: 215 34% 13%;
+  --card: 0 0% 100%;
+  --border: 214 24% 88%;
+  --primary: 17 90% 56%;
+  --accent: 182 60% 40%;
+}
+
+.dark {
+  --background: 210 35% 10%;
+  --foreground: 40 70% 96%;
+  --card: 211 33% 13%;
+  --border: 211 24% 25%;
+  --primary: 21 88% 58%;
+  --accent: 174 72% 43%;
+}
+
+* {
+  border-color: hsl(var(--border));
+}
+
+body {
+  background:
+    radial-gradient(1300px 480px at 15% -10%, hsl(var(--accent) / 0.18), transparent 60%),
+    radial-gradient(900px 460px at 90% -12%, hsl(var(--primary) / 0.2), transparent 50%),
+    hsl(var(--background));
+  color: hsl(var(--foreground));
+}
